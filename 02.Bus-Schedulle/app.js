@@ -8,26 +8,26 @@ function solve() {
     next: "depot",
   };
 
+  function updateStopInfo(departButtonState, arriveButtonState, textContent) {
+    departButton.disabled = departButtonState;
+    arriveButton.disabled = arriveButtonState;
+    busInfoBox.textContent = textContent;
+  }
+
   function depart() {
     fetch(`http://localhost:3030/jsonstore/bus/schedule/${busStopInfo.next}`)
       .then((res) => res.json())
       .then((busStop) => {
         busStopInfo = busStop;
-        departButton.disabled = true;
-        arriveButton.disabled = false;
-        busInfoBox.textContent = `Next stop: ${busStopInfo.name}`;
+        updateStopInfo(true, false, `Next stop: ${busStopInfo.name}`);
       })
       .catch(() => {
-        departButton.disabled = true;
-        arriveButton.disabled = true;
-        busInfoBox.textContent = `Error`;
+        updateStopInfo(true, true, `Error`);
       });
   }
 
   async function arrive() {
-    departButton.disabled = false;
-    arriveButton.disabled = true;
-    busInfoBox.textContent = `Arriving at: ${busStopInfo.name}`;
+    updateStopInfo(false, true, `Arriving at: ${busStopInfo.name}`);
   }
 
   return {
